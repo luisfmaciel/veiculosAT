@@ -1,0 +1,29 @@
+services:
+  mongo-server:
+    container_name: mongo-server
+    image: mongo
+    volumes:
+      - ./mongodb-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - veiculos-network
+  eureka-server:
+    image: veiculos-at/eureka
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - veiculos-network
+  veiculos-service:
+    image: veiculos-at/veiculos
+    ports:
+      - "3000:3000"
+    networks:
+      - veiculos-network
+    depends_on:
+      - eureka-server
+      - mongo-server
+networks:
+  veiculos-network:
+    driver: bridge
